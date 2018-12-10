@@ -8,23 +8,36 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
 public class MainActivity extends AppCompatActivity {
 
     DatabaseHelper myDB;
-    Button btnAdd;
-    Button btnView;
+    Button btnAdd,btnView;
     EditText editText;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         editText = (EditText) findViewById(R.id.editText);
-        btnAdd =  (Button) findViewById(R.id.button);
-        btnView = (Button) findViewById(R.id.button);
+        btnAdd = (Button) findViewById(R.id.button);
+        btnView = (Button) findViewById(R.id.button2);
         myDB = new DatabaseHelper(this);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newEntry = editText.getText().toString();
+                if(editText.length()!= 0){
+                    AddData(newEntry);
+                    editText.setText("");
+                }else{
+                    Toast.makeText(MainActivity.this, "Najpierw musisz coś dodać!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,35 +48,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newEntry = editText.getText().toString();
-                if (editText.length() != 0)
-                {
-                    AddData(newEntry);
-                    editText.setText("");
-                }
-                else
-                {
-                    Toast.makeText(MainActivity.this, "Aby coś dodać pole musi być uzupełnione", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
     }
 
-    public void AddData(String newEntry)
-    {
+    public void AddData(String newEntry) {
+
         boolean insertData = myDB.addData(newEntry);
 
-        if(insertData==true)
-        {
-            Toast.makeText(MainActivity.this, "Dodano.", Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            Toast.makeText(MainActivity.this, "Coś poszło nie tak.", Toast.LENGTH_LONG).show();
+        if(insertData==true){
+            Toast.makeText(this, "Dodano.", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(this, "Coś poszło nie tak.", Toast.LENGTH_LONG).show();
         }
     }
 }
